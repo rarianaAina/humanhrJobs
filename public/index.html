@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <input type="file" id="inpFile">
+    <button type="button" id="btnUpload">Upload</button>
+    <br><br>
+    <textarea style="width: 300px; height: 150px;" id="resultText" placeholder="Your PDF Text"></textarea>
+    <br>
+    <button type="button" id="btnCopy">Copy</button>
+
+    <script>
+        const btnUpload = document.getElementById("btnUpload");
+        const btnCopy = document.getElementById("btnCopy");
+        const inpFile = document.getElementById("inpFile");
+        const resultText = document.getElementById("resultText");
+
+        // Bouton pour uploader et afficher le texte extrait
+        btnUpload.addEventListener("click", () => {
+            const formData = new FormData();
+
+            if (inpFile.files.length === 0) {
+                alert("Veuillez sélectionner un fichier PDF.");
+                return;
+            }
+
+            formData.append("pdfFile", inpFile.files[0]);
+
+            fetch("/extract-text", {
+                method: "post",
+                body: formData
+            })
+            .then(response => response.text())
+            .then(extractedText => {
+                resultText.value = extractedText;
+            })
+            .catch(err => {
+                console.error("Erreur lors du traitement : ", err);
+                alert("Erreur lors du traitement du fichier.");
+            });
+        });
+
+        // Bouton pour copier le texte extrait
+        btnCopy.addEventListener("click", () => {
+            resultText.select(); // Sélectionner le contenu
+            document.execCommand("copy"); // Copier dans le presse-papiers
+            alert("Texte copié !");
+        });
+    </script>
+</body>
+</html>
