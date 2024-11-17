@@ -19,12 +19,10 @@ app.post("/extract-text", (req, res) => {
         // Liste des mots-clés à chercher
         const keywords = ["Java", "Python", "HTML", "Licence", "Master", "Permis B"];
 
-        // Trouver les mots-clés présents dans le texte
         const foundKeywords = keywords.filter(keyword => 
             new RegExp(`\\b${keyword}\\b`, "i").test(extractedText)
         );
 
-        // Formater la réponse sous forme de texte
         const response = foundKeywords.join("; ");
 
         res.send(response || "Aucun mot-clé trouvé.");

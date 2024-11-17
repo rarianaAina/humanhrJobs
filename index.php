@@ -1,3 +1,14 @@
+<?php
+session_start();
+
+// Vérifier si une session est déjà active
+if (isset($_SESSION['user_id'])) {
+    // Rediriger l'utilisateur vers la page d'accueil ou une autre page
+    header("Location: accueil.php");
+    exit();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
