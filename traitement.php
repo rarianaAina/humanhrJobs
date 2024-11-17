@@ -45,14 +45,18 @@ if ($result) {
             // Stocker les informations dans la session pour les utilisateurs
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['email'] = $user['email'];
+            $_SESSION['middle_name'] = $user['middle_name'];
+            $_SESSION['last_name'] = $user['last_name'];
         }
 
         // Si admin est coché, rediriger vers la page admin
-        $redirectPage = $is_admin ? 'admin_dashboard.php' : 'accueil.php';
+        $redirectPage = $is_admin ? 'dashboardAdmin.php' : 'accueil.php';
 
         // Formulaire POST caché pour envoyer l'ID de l'utilisateur
         echo "<form id='redirectForm' action='$redirectPage' method='POST'>";
         echo "<input type='hidden' name='user_id' value='" . $_SESSION['user_id'] . "' />";
+        echo "<input type='hidden' name='middle_name' value='" . $_SESSION['middle_name'] . "' />";
+        echo "<input type='hidden' name='last_name' value='" . $_SESSION['last_name'] . "' />";
         echo "<script>document.getElementById('redirectForm').submit();</script>";
         exit();
     } else {

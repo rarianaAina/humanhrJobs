@@ -34,7 +34,7 @@ echo "Email : " . $_SESSION['email'];
         </form>
     </div>
     <div class="logo-container">
-        <img src="../web/images/oherm_logo.png" alt="Logo" class="logo">
+        <img src="logo2.png" alt="Logo" class="logo">
     </div>
 
     <div class="container">
@@ -101,7 +101,7 @@ echo "Email : " . $_SESSION['email'];
             </div>
             <div id="societeInfo" class="info-box">
                 <img src="logo.png" alt="Logo-logo" class="logo">
-                <p>Copyright 2024 - ETU000739 - ETU002076</p>
+                <p>Copyright 2024 - ETU000739 - ETU002076 - ETU002378</p>
             </div>
 
             <div id="infoPostuler" class="info-box" style="display: none;">
