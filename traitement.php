@@ -12,15 +12,27 @@ if (!$conn) {
     die("Erreur de connexion à la base de données : " . mysqli_connect_error());
 }
 
-// Démarrer la session
+// Démarrer la session seulement si l'admin n'est pas coché
 session_start();
 
 // Récupérer les données du formulaire
 $email = mysqli_real_escape_string($conn, $_POST['email']);
 $mdp = mysqli_real_escape_string($conn, $_POST['mdp']);
+$is_admin = isset($_POST['is_admin']) ? true : false; // Vérifier si la case Admin est cochée
 
-// Requête pour vérifier l'utilisateur
-$query = "SELECT * FROM ohrm_job_candidate WHERE email = '$email' AND PASSWORD = '$mdp'";
+// Déterminer la table à utiliser en fonction de l'option "Admin"
+$table = $is_admin ? 'utilisateurs' : 'ohrm_job_candidate'; // Table des utilisateurs ou des candidats
+
+// Si Admin est coché, il n'y a pas de session à initialiser
+if ($is_admin) {
+    // Requête pour vérifier l'admin
+    $query = "SELECT * FROM $table WHERE email = '$email' AND PASSWORD = '$mdp'";
+} else {
+    // Si l'utilisateur n'est pas un admin, on vérifie dans la table ohrm_job_candidate
+    $query = "SELECT * FROM $table WHERE email = '$email' AND PASSWORD = '$mdp'";
+}
+
+// Exécution de la requête
 $result = mysqli_query($conn, $query);
 
 if ($result) {
@@ -28,12 +40,18 @@ if ($result) {
         // Récupérer les données de l'utilisateur
         $user = mysqli_fetch_assoc($result);
 
-        // Stocker les informations dans la session
-        $_SESSION['user_id'] = $user['id'];
-        $_SESSION['email'] = $user['email'];
+        // Si Admin est coché, ne pas stocker en session, juste rediriger
+        if (!$is_admin) {
+            // Stocker les informations dans la session pour les utilisateurs
+            $_SESSION['user_id'] = $user['id'];
+            $_SESSION['email'] = $user['email'];
+        }
+
+        // Si admin est coché, rediriger vers la page admin
+        $redirectPage = $is_admin ? 'admin_dashboard.php' : 'accueil.php';
 
         // Formulaire POST caché pour envoyer l'ID de l'utilisateur
-        echo "<form id='redirectForm' action='accueil.php' method='POST'>";
+        echo "<form id='redirectForm' action='$redirectPage' method='POST'>";
         echo "<input type='hidden' name='user_id' value='" . $_SESSION['user_id'] . "' />";
         echo "<script>document.getElementById('redirectForm').submit();</script>";
         exit();
@@ -48,3 +66,4 @@ if ($result) {
 
 // Fermer la connexion
 mysqli_close($conn);
+?>

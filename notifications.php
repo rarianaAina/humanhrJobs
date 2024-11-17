@@ -1,17 +1,14 @@
 <?php
+header('Content-Type: text/html; charset=utf-8');
 session_start();
 
 // Vérifier si l'utilisateur est connecté
 if (!isset($_SESSION['user_id'])) {
-    // Rediriger vers la page de connexion si la session n'est pas active
     header("Location: index.php");
     exit();
 }
 
-echo "Bienvenue, utilisateur ID : " . $_SESSION['user_id'] . "<br>";
-echo "Email : " . $_SESSION['email'];
-
-// Paramètres de connexion à la base de données
+// Paramètres de connexion
 $host = "localhost";
 $username = "rariana";
 $password = "rariana";
@@ -19,6 +16,7 @@ $database = "orangehrm";
 
 // Connexion à la base de données
 $conn = new mysqli($host, $username, $password, $database);
+$conn->set_charset("utf8");
 
 // Vérification de la connexion
 if ($conn->connect_error) {
@@ -26,7 +24,7 @@ if ($conn->connect_error) {
 }
 
 // Utiliser l'ID du candidat stocké dans la session
-$candidate_id = $_SESSION['user_id'];  // Remplacer $_GET['user_id'] par $_SESSION['user_id']
+$candidate_id = $_SESSION['user_id'];
 echo "Candidat ID : " . $candidate_id . "<br>";
 
 // Vérifier si un ID de candidat est fourni
@@ -35,15 +33,18 @@ if ($candidate_id == 0) {
     exit;
 }
 
-// Récupérer les actions liées au candidat
-$sql = "SELECT action, performed_date FROM ohrm_job_candidate_history WHERE candidate_id = ? ORDER BY performed_date DESC";
+// Récupérer les actions liées au candidat avec le nom de la vacance
+$sql = "SELECT candidate_vacancy_name, action, performed_date 
+        FROM ohrm_job_candidate_history 
+        WHERE candidate_id = ? 
+        ORDER BY candidate_vacancy_name, performed_date DESC";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $candidate_id);
 $stmt->execute();
 $result = $stmt->get_result();
 
-// Tableau pour stocker les notifications
-$notifications = [];
+// Tableau pour stocker les notifications groupées par vacance
+$notifications_by_vacancy = [];
 
 // Tableau des actions possibles
 $action_labels = [
@@ -55,22 +56,21 @@ $action_labels = [
     9 => "Vous êtes embauché"
 ];
 
-// Boucle pour récupérer et afficher les notifications
+// Boucle pour organiser les notifications
 while ($row = $result->fetch_assoc()) {
+    $vacancy_name = $row['candidate_vacancy_name'];
     $action = $row['action'];
     $performed_date = $row['performed_date'];
 
     // Vérifier si l'action existe dans le tableau des libellés
     $action_label = isset($action_labels[$action]) ? $action_labels[$action] : "Action inconnue";
 
-    // Ajouter à la liste des notifications
-    $notifications[] = [
+    // Ajouter la notification dans le groupe correspondant
+    $notifications_by_vacancy[$vacancy_name][] = [
         'action' => $action_label,
         'date' => $performed_date
     ];
 }
-
-// Vérifier s'il y a des notifications
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -107,14 +107,20 @@ while ($row = $result->fetch_assoc()) {
             text-align: center;
         }
 
-        .notifications {
-            margin-top: 20px;
+        .vacancy-group {
+            margin-bottom: 30px;
+        }
+
+        .vacancy-title {
+            font-size: 1.5em;
+            color: #4CAF50;
+            margin-bottom: 10px;
         }
 
         .notification-item {
             background-color: #fff;
             padding: 15px;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
             border-left: 5px solid #4CAF50;
             border-radius: 5px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -157,21 +163,23 @@ while ($row = $result->fetch_assoc()) {
 <body>
 
     <div class="container">
-
         <div class="retour">
             <a href="accueil.php" class="btn btn-back">Retourner à l'accueil</a>
         </div>
         <h1>Notifications du Candidat</h1>
 
-        <?php if (count($notifications) > 0) : ?>
-            <div class="notifications">
-                <?php foreach ($notifications as $notification) : ?>
-                    <div class="notification-item">
-                        <div class="notification-action"><?php echo $notification['action']; ?></div>
-                        <div class="notification-date"><?php echo $notification['date']; ?></div>
-                    </div>
-                <?php endforeach; ?>
-            </div>
+        <?php if (count($notifications_by_vacancy) > 0) : ?>
+            <?php foreach ($notifications_by_vacancy as $vacancy => $notifications) : ?>
+                <div class="vacancy-group">
+                    <div class="vacancy-title"><?php echo $vacancy; ?></div>
+                    <?php foreach ($notifications as $notification) : ?>
+                        <div class="notification-item">
+                            <div class="notification-action"><?php echo $notification['action']; ?></div>
+                            <div class="notification-date"><?php echo $notification['date']; ?></div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            <?php endforeach; ?>
         <?php else : ?>
             <div class="empty-message">
                 Aucune notification pour ce candidat.

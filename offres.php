@@ -8,8 +8,6 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
-?>
-<?php
 // Paramètres de connexion
 $host = "localhost";
 $username = "rariana";
@@ -27,10 +25,11 @@ if ($conn->connect_error) {
 // Définir l'encodage de la connexion à UTF-8
 $conn->set_charset("utf8");
 
+// Requête SQL pour récupérer les offres d'emploi
 $sql = "SELECT id, name, description FROM ohrm_job_vacancy";
 $result = $conn->query($sql);
 
-// Vérification et affichage des données
+// Vérification de la disponibilité des données
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -109,6 +108,22 @@ $result = $conn->query($sql);
             background-color: #45a049;
         }
 
+        .retour {
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .btn-back {
+            background-color: #f44336;
+            padding: 10px 20px;
+            border-radius: 5px;
+            color: white;
+            text-decoration: none;
+        }
+
+        .btn-back:hover {
+            background-color: #d32f2f;
+        }
     </style>
 </head>
 
@@ -116,6 +131,7 @@ $result = $conn->query($sql);
     <div class="retour">
         <a href="accueil.php" class="btn btn-back">Retourner à l'accueil</a>
     </div>
+
     <div class="container">
         <h1>Liste des Offres d'Emploi</h1>
 
@@ -132,7 +148,7 @@ $result = $conn->query($sql);
                 echo "<td>" . htmlspecialchars($row['name']) . "</td>";
                 echo "<td>" . htmlspecialchars($row['description']) . "</td>";
                 // Lien de postulation avec le `vacancy_id` en paramètre
-                echo "<td class='button-container'><a href='formulaireCandidat.php?vacancy_id=" . $vacancy_id . "&vacancy_name=" . urlencode($vacancy_name) . "' class='btn'>Postuler</a></td>";
+                echo "<td class='button-container'><a href='testTechnique.php?vacancy_id=" . $vacancy_id . "&vacancy_name=" . urlencode($vacancy_name) . "' class='btn'>Postuler</a></td>";
                 echo "</tr>";
             }
             echo "</table>";

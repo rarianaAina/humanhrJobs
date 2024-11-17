@@ -29,6 +29,11 @@ if (isset($_SESSION['user_id'])) {
             <p>Mot de passe :</p>
             <input type="password" name="mdp" required>
             <input type="submit" value="Connexion">
+            <p>
+                <label>
+                    <input type="checkbox" name="is_admin" value="1"> Admin
+                </label>
+            </p>
             <?php
             if (isset($_GET['error']) && $_GET['error'] == 1) {
                 echo "<p class='error-message'>Email ou mot de passe incorrect.</p>";

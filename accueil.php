@@ -20,10 +20,12 @@ echo "Email : " . $_SESSION['email'];
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Plateforme de Recrutement</title>
     <link rel="stylesheet" href="style-accueil.css">
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="favicon.png">
 </head>
+
 
 <body>
     <div class="logout-container">
@@ -42,42 +44,49 @@ echo "Email : " . $_SESSION['email'];
             <p> Choisissez :</p>
             <div class="button-container">
 
-
-                <form action="https://cdn.botpress.cloud/webchat/v2.2/shareable.html" method="GET" target="_blank">
+            
+                <form action="https://cdn.botpress.cloud/webchat/v2.2/shareable.html" method="get" target="_blank">
+                    <input type="hidden" name="configUrl" value="https://files.bpcontent.cloud/2024/11/13/11/20241113111737-X2H714H5.json">
                     <div class="button-with-icon">
-                        <i class="fas fa-comments"></i> <!-- Icône du chatbot -->
-                        <button type="submit" onmouseover="showInfo('infoChatbot')" onmouseout="hideInfo()">Discuter avec un Chat Bot</button>
+
+                        <button type="submit"
+                            onmouseover="showInfo('infoChatbot')"
+                            onmouseout="hideInfo()"
+                            >
+                            <i class="fas fa-comments"></i> Discuter avec un Chat Bot
+                        </button>
                     </div>
                 </form>
 
-                <!-- Formulaire pour transformer un CV -->
+
+               
                 <form action="http://localhost:3000" method="GET">
                     <div class="button-with-icon">
-                        <i class="fas fa-file-upload"></i> <!-- Icône pour télécharger un fichier -->
-                        <button type="submit" onmouseover="showInfo('infoTransformation')" onmouseout="hideInfo()">Transformer un CV</button>
-                    </div>
-                </form>
-
-                <!-- Formulaire pour simulation de projets & tests techniques -->
-                <form action="" method="GET">
-                    <div class="button-with-icon">
-                        <i class="fas fa-clipboard-check"></i>
-                        <button type="submit" onmouseover="showInfo('infoTestTechnique')" onmouseout="hideInfo()">Simulation de projets & Tests techniques</button>
+                        
+                        <button type="submit" onmouseover="showInfo('infoTransformation')" onmouseout="hideInfo()">
+                            <i class="fas fa-file-upload"></i> Transformer un CV</button>
                     </div>
                 </form>
 
                 <!-- Formulaire pour postuler -->
                 <form action="offres.php" method="GET">
                     <div class="button-with-icon">
-                        <i class="fas fa-briefcase"></i>
-                        <button type="submit" onmouseover="showInfo('infoPostuler')" onmouseout="hideInfo()">Nos offres</button>
+
+                        <button type="submit" onmouseover="showInfo('infoPostuler')" onmouseout="hideInfo()"><i class="fas fa-briefcase"></i>Nos offres</button>
                     </div>
                 </form>
 
                 <form action="notifications.php" method="GET">
                     <div class="button-with-icon">
-                        <i class="fa fa-envelope"></i>
-                        <button type="submit" onmouseover="showInfo('infoNotifications')" onmouseout="hideInfo()">Vos Notifications</button>
+
+                        <button type="submit" onmouseover="showInfo('infoNotifications')" onmouseout="hideInfo()"><i class="fa fa-envelope"></i>Vos Notifications</button>
+                    </div>
+                </form>
+
+                <form action="compatibiliteTest.php" method="GET">
+                    <div class="button-with-icon">
+
+                        <button type="submit" onmouseover="showInfo('infoCompatibilite')" onmouseout="hideInfo()"><i class="fa fa-envelope"></i>Test de compatibilité</button>
                     </div>
                 </form>
 
@@ -92,7 +101,7 @@ echo "Email : " . $_SESSION['email'];
             </div>
             <div id="societeInfo" class="info-box">
                 <img src="logo.png" alt="Logo-logo" class="logo">
-                <p>Copyright 2024 - ETU000739</p>
+                <p>Copyright 2024 - ETU000739 - ETU002076</p>
             </div>
 
             <div id="infoPostuler" class="info-box" style="display: none;">
@@ -115,6 +124,11 @@ echo "Email : " . $_SESSION['email'];
             </div>
             <div id="infoNotifications" class="info-box" style="display: none;">
                 <p>Vous pouvez voir ici les notifications pour les offres sur lesquelles vous avez postulé</p>
+            </div>
+            <div id="infoCompatibilite" class="info-box" style="display: none;">
+                <p>Vous aurez ici un test de compatibilité avec notre société qui pourrait vous aider aussi à avoir un avantage par rapport 
+                    aux autres candidats. <br> Nous vous invitons donc à bien remplir les tests.
+                </p>
             </div>
         </div>
     </div>
